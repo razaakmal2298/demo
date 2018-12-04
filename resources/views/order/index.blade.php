@@ -4,7 +4,7 @@
 <div class="container">
 	@if($errors->any())
 		<h4>{{$errors->first()}}</h4>
-		@endif
+	@endif
 	<h3>Select Delivery address</h3>
 	<form role="form" method="POST" enctype="multipart/form-data" action="{{route('order.store')}}" style="display: flex;">
 		@csrf
@@ -28,13 +28,19 @@
 	
 		<div class="col-md-4">
 			<div>
+				@php($total = 0)
 				@foreach($carts as $cart)
-					<p>Product Sku: {{$cart->sku}}  <span>Price: {{$cart->price}}</span></p>
+					<ul>
+						<li>Product: {{$cart->product->name}}</li>
+						<li>Price: {{$curr[0]->symbol}} {{$cart->product->price * $curr[0]->conversion_rate}}</li>
+						<li>Quantity: {{$cart->quantity}}</li>
+						@php($total = $total + $cart->price * $cart->quantity)	
+					</ul>
 				@endforeach	
 				<p>Total Amount: {{$curr[0]->symbol}} {{ $total * $curr[0]->conversion_rate }}</p>
 			</div>
 			<div>
-				<button type="submit" class="btn btn-primary">Buy</button>	
+				<button type="submit" class="btn btn-primary">Checkout</button>	
 			</div>
 		</div>
 		</form>

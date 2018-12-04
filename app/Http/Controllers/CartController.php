@@ -13,7 +13,7 @@ class CartController extends Controller
 {
     public function create(Request $request, $id)
     {   
-            	
+        	
         $carts = Cart::where([
                 
                 ['product_id', '=', $id],
@@ -25,9 +25,14 @@ class CartController extends Controller
             
             if (isset($cart->product_id)) 
             {              
-                Cart::where('product_id', $request->id)->update(array(
+                Cart::where([
 
-                    "quantity" => $cart->quantity + $request->quantity
+                    ['product_id', $request->id],
+                    ['user_id', '=', auth()->user()->id],
+
+                ])->update(array(
+
+                    "quantity" => $request->quantity
                 ));
                 
                 return redirect()->back()->withErrors(['Added to Bag']);
@@ -46,8 +51,7 @@ class CartController extends Controller
         
         Cart::create($data);
         return redirect()->back()->withErrors(['Added to Bag']);
-
-    	
+	
     }
 
     public function show()
@@ -55,29 +59,39 @@ class CartController extends Controller
         $currencies = Currency::all();
         $curr = Currency::where('country_id', Session::get('country_id'))->get();
 
-        $total = 0;
-        $carts = Cart::with('product')->where('user_id', auth()->user()->id)->get();
-        
-        foreach($carts as $cart) {
-            $total = $total + $cart->price * $cart->quantity;
-        }        
+        $carts = Cart::with('product')->where('user_id', auth()->user()->id)->get();   
 
-        return view('cart.index', compact('currencies', 'carts', 'total', 'curr') );
+        return view('cart.index', compact('currencies', 'carts', 'curr') );
     }
 
     public function update(Request $request, $id)
-    {
-        Cart::where('id', $id)->update(array(
+    {   
+
+        Cart::where([
+                
+                ['id', '=', $id],
+                ['user_id', '=', auth()->user()->id],
+
+            ])->update(array(
 
                 "quantity" => $request->quantity
         ));
 
-        return redirect()->back()->withErrors(['Quantity has been updated.']);
+        $carts = Cart::with('product')->where('user_id', auth()->user()->id)->get();
+        
+        return redirect()->back()->withErrors(['Cart has been updated.']);
+
     }
 
     public function delete($id)
     {
-        Cart::where('id', $id)->delete();
+        Cart::where([
+                
+                ['id', '=', $id],
+                ['user_id', '=', auth()->user()->id],
+
+            ])->delete();
+        
         return redirect()->back()->withErrors(['Cart has been updated.']);
 
     }

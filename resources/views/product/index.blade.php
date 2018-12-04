@@ -21,9 +21,9 @@
                             <option value="{{$i}}">{{$i}}</option>
                         @endfor
                     </select>
-            	<div class="modal-footer">
-            		<button type="submit" class="btn btn-primary">Add to cart</button>
-            	</div>
+                	<div class="modal-footer">
+                		<button type="submit" class="btn btn-primary">Add to cart</button>
+                	</div>
                 </form>
             </div>
 		@endforeach  

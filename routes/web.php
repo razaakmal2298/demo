@@ -29,8 +29,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 Route::post('/country', 'CurrencyController@show')->name('country');
 
-Route::get('/order', 'OrderController@show')->name('order.show');
+Route::get('/order', 'OrderController@create')->name('order.create');
 Route::post('/order/store', 'OrderController@store')->name('order.store');
+Route::get('/order/show', 'OrderController@show')->name('order.show');
 
 Route::get('/address', 'AddressController@index')->name('address.index');
 
