@@ -8,12 +8,13 @@ use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Currency;
 use Session;
+use Response;
 
 class CartController extends Controller
 {
     public function create(Request $request, $id)
     {   
-        	
+        
         $carts = Cart::where([
                 
                 ['product_id', '=', $id],
@@ -23,7 +24,7 @@ class CartController extends Controller
 
         foreach ($carts as $cart) {
             
-            if (isset($cart->product_id)) 
+            if (($cart->product_id) && ($cart->quantity != $request->quantity))
             {              
                 Cart::where([
 
@@ -35,9 +36,22 @@ class CartController extends Controller
                     "quantity" => $request->quantity
                 ));
                 
-                return redirect()->back()->withErrors(['Added to Bag']);
+                $response = array(
+                    'status' => 'success',
+                    'msg' => 'Quantity updated',
+                );
+        
+                return Response::json($response);
             }
-
+            else 
+            {
+                $response = array(
+                    'status' => 'success',
+                    'msg' => 'Already added to cart',
+                );
+        
+                return Response::json($response);
+            }
         }
 
         $data = [
@@ -50,7 +64,13 @@ class CartController extends Controller
         ];
         
         Cart::create($data);
-        return redirect()->back()->withErrors(['Added to Bag']);
+        
+        $response = array(
+            'status' => 'success',
+            'msg' => 'Added to cart',
+        );
+        
+        return Response::json($response);
 	
     }
 

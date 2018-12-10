@@ -26,8 +26,6 @@ class AddressController extends Controller
 
     public function update(Request $request, $id)
     {
-    	
-
     	Address::where('id', $id)->update(array(
             
             "name" => $request->name,
@@ -35,8 +33,6 @@ class AddressController extends Controller
             "address"     => $request->address,
             "state"          => $request->state,
             "pincode"      => $request->pincode,
-
-
         ));
 
     	return back()->withMessage('Address has been updated');
@@ -44,8 +40,15 @@ class AddressController extends Controller
 
     public function create(Request $request)
     {
+    	$addresses = Address::where('user_id', auth()->user()->id)->get();
 
-    	$data = [
+        foreach ($addresses as $address) {
+            if ($address->address_type == $request->address_type) {
+                return back()->withMessage('Address already exist');
+            }
+        }
+
+        $data = [
                     "name" => $request->name,
 		            "contact" => $request->contact,
 		            "address" => $request->address,

@@ -78,7 +78,7 @@ class OrderController extends Controller
     {   
         $currencies = Currency::All();
 
-        $orders = Order::with('orderproduct')->where('user_id', auth()->user()->id)->get();
+        $orders = Order::with('orderproduct.product')->where('user_id', auth()->user()->id)->get();
         
         return view('order.show', compact('currencies', 'orders'));
 
